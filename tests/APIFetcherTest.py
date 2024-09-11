@@ -1,6 +1,6 @@
 import unittest
 
-from datafetcher import api_fetcher
+from src.extract import extract_portal
 
 
 class APIFetcherTest(unittest.TestCase):
@@ -8,7 +8,7 @@ class APIFetcherTest(unittest.TestCase):
     def test_fetch_data_go(self):
         base_url = "api.odcloud.kr/api"  # 데이터 포털의 기본 URL을 여기에 입력
 
-        api = api_fetcher.ApiFetcher(base_url)
+        api = extract_portal.ExtractPortal(base_url)
         endpoint = "/15113444/v1/uddi:00ba96f2-2548-4894-8e76-e597b5eadcac"  # API 엔드포인트를 여기에 입력
         servicekey = "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os+bMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw=="
         params = {"serviceKey": servicekey, "page": "1", "perPage": "3", "returnType": "JSON"}
@@ -63,12 +63,11 @@ class APIFetcherTest(unittest.TestCase):
     def test_fetch_data_seoul(self):
         base_url = "openAPI.seoul.go.kr:8088/"  # 데이터 포털의 기본 URL을 여기에 입력
 
-        api = api_fetcher.ApiFetcher(base_url)
+        api = extract_portal.ExtractPortal(base_url)
         endpoint = "/json/GoodsInstallState/1/5/"  # API 엔드포인트를 여기에 입력
         servicekey = "6163496569656b66313130576a545761"
 
         data = api.get_data_seoul(servicekey, endpoint)
-
         expected = {
             "GoodsInstallState": {
                 "list_total_count": 826,
@@ -97,9 +96,9 @@ class APIFetcherTest(unittest.TestCase):
                         "PROD_NM": "바론형",
                         "MDL_NM": "ACP-2004, ACPL-SC050N",
                         "REC_END_DT": "20220320",
-                        "INST_ADDR": "서울 동작구 동작동 102-18 이수스위첸포레힐즈아파트",
-                        "PRJ_NM": "동작1 주택재건축정비사업 중 가로등 설비 전기공사",
-                        "INST_CNT": 10.0
+                        "INST_ADDR": "서울 동작구 신대방동 686-48 협성휴포레시그니처 입구",
+                        "PRJ_NM": "신대방 협성휴포레 아파트 신축공사 중 가로등 설비 전기공사",
+                        "INST_CNT": 16.0
                     },
                     {
                         "CTF_NO": "SGPD-01026",
@@ -109,9 +108,9 @@ class APIFetcherTest(unittest.TestCase):
                         "PROD_NM": "바론형",
                         "MDL_NM": "ACP-2004, ACPL-SC050N",
                         "REC_END_DT": "20220320",
-                        "INST_ADDR": "서울 동작구 신대방동 686-48 협성휴포레시그니처 입구",
-                        "PRJ_NM": "신대방 협성휴포레 아파트 신축공사 중 가로등 설비 전기공사",
-                        "INST_CNT": 16.0
+                        "INST_ADDR": "서울 동작구 동작동 102-18 이수스위첸포레힐즈아파트",
+                        "PRJ_NM": "동작1 주택재건축정비사업 중 가로등 설비 전기공사",
+                        "INST_CNT": 10.0
                     },
                     {
                         "CTF_NO": "SGPD-01045",
@@ -140,6 +139,7 @@ class APIFetcherTest(unittest.TestCase):
                 ]
             }
         }
+
 
         self.assertEqual(expected, data)
 

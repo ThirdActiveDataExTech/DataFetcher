@@ -3,7 +3,7 @@ from urllib.parse import urlencode
 import requests
 
 
-class ApiFetcher(object):
+class ExtractPortal(object):
     def __init__(self, base_url):
         """
         :param base_url: 데이터 포털 API의 기본 URL
@@ -26,6 +26,7 @@ class ApiFetcher(object):
         try:
             response = requests.get(url)
             response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
+
             return response.json()
         except requests.exceptions.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
@@ -54,11 +55,12 @@ class ApiFetcher(object):
             print(f"An error occurred: {err}")
         return None
 
-# 사용 예시
+
+
 if __name__ == "__main__":
     base_url = "apis.data.go.kr/B500001/waternow/twdClwr"  # 데이터 포털의 기본 URL을 여기에 입력
 
-    api = ApiFetcher(base_url)
+    api = ExtractPortal(base_url)
 
     endpoint = "/wdr/clwrList"  # API 엔드포인트를 여기에 입력
     servicekey = "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os+bMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw=="
