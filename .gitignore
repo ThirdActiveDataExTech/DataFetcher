@@ -1,8 +1,9 @@
 ### basic ###
 .venv/*
 .idea/.name
-.idea/inspectionProfiles
-idea/dataSources.xml
+.idea/inspectionProfiles/*
+.idea/dataSources.xml
+.idea/.gitignore
 
 ### airflow ###
 airflow/airflow
