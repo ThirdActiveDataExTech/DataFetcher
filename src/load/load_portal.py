@@ -3,22 +3,23 @@ from io import BytesIO
 import json
 
 
-def save_data_to_minio(url, response):
+def load_portal(**context):
+    print("this is load portal data module")
+    response = context['request'].xcom_pull(task_ids='get_data_portal')
+    url = "minio-server-url"
     client = Minio(
-        url,  # MinIO 서버 주소
-        access_key="your-access-key",  # 액세스 키
-        secret_key="your-secret-key",  # 시크릿 키
+        url,
+        access_key="your-access-key",
+        secret_key="your-secret-key",
         secure=True
     )
     json_str = json.dumps(response, ensure_ascii=False, indent=4)
     data = BytesIO(json_str.encode('utf-8'))
 
-    # MinIO에 파일 업로드
     bucket_name = "my-bucket"
     object_name = "api_response_data.txt"
 
     try:
-        # MinIO에 데이터 업로드
         client.put_object(
             bucket_name,
             object_name,

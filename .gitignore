@@ -1,1 +1,11 @@
-airflow_venv/
+### basic ###
+.venv/*
+.idea/.name
+.idea/inspectionProfiles
+idea/dataSources.xml
+
+### airflow ###
+airflow/airflow
+airflow/airflow.cfg
+airflow/airflow.db
+airflow/logs

@@ -6,54 +6,44 @@ from src.extract import extract_portal
 class APIFetcherTest(unittest.TestCase):
 
     def test_fetch_data_go(self):
-        base_url = "api.odcloud.kr/api"  # 데이터 포털의 기본 URL을 여기에 입력
+        base_url = "api.odcloud.kr/api"
+        endpoint = "/15113444/v1/uddi:1ae26320-fa56-4206-8d06-9ee5db5a8dcf"
+        service_key = "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os%2BbMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw%3D%3D"
 
-        api = extract_portal.ExtractPortal(base_url)
-        endpoint = "/15113444/v1/uddi:00ba96f2-2548-4894-8e76-e597b5eadcac"  # API 엔드포인트를 여기에 입력
-        servicekey = "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os+bMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw=="
-        params = {"serviceKey": servicekey, "page": "1", "perPage": "3", "returnType": "JSON"}
+        data_portal_extract = extract_portal.ExtractPortal(base_url, endpoint, service_key)
+        params = {"page": "1", "perPage": "3", "returnType": "JSON"}
 
-        data = api.get_data_portal(endpoint, params)
+        data = data_portal_extract.get_data_portal(params)
 
-        expected = {
-          "currentCount": 3,
-          "data": [
-            {
-              "규모": "1412.00",
-              "데이터기준일": "2023-03-31",
-              "사업장구분": "일반음식점",
-              "상호명": "(주)풀무원푸드앤컬쳐",
-              "연번": 1,
-              "음식물쓰레기 예상배출량(kg_년)": 32400,
-              "전화번호": "061-374-1050",
-              "주소": "전라남도 화순군 화순읍 오성로 292-90 (무등산CC)"
-            },
-            {
-              "규모": "500.00",
-              "데이터기준일": "2023-03-31",
-              "사업장구분": "집단급식소",
-              "상호명": "(주)현대그린푸드 녹십자 화순점",
-              "연번": 2,
-              "음식물쓰레기 예상배출량(kg_년)": 32400,
-              "전화번호": None,
-              "주소": "전라남도 화순군 화순읍 산단길 40"
-            },
-            {
-              "규모": "330.78",
-              "데이터기준일": "2023-03-31",
-              "사업장구분": "일반음식점",
-              "상호명": "518낙지전문점",
-              "연번": 3,
-              "음식물쓰레기 예상배출량(kg_년)": 6000,
-              "전화번호": None,
-              "주소": "전라남도 화순군 도곡면 원화리 190-1"
-            }
-          ],
-          "matchCount": 84,
-          "page": 1,
-          "perPage": 3,
-          "totalCount": 84
-        }
+        expected = {'currentCount': 3,
+                    'data': [{'규모': '381.93',
+                              '데이터기준일': '2024-08-28',
+                              '사업장구분': '일반음식점',
+                              '상호명': '남도명가',
+                              '연번': 1,
+                              '음식물쓰레기 예상배출량(kg_년)': 10800,
+                              '전화번호': '061-371-0085',
+                              '주소': '전라남도 화순군 능주면 능주농공길 3'},
+                             {'규모': '108.42',
+                              '데이터기준일': '2024-08-28',
+                              '사업장구분': '일반음식점',
+                              '상호명': '전원',
+                              '연번': 2,
+                              '음식물쓰레기 예상배출량(kg_년)': 1300,
+                              '전화번호': '061-372-1663',
+                              '주소': '전라남도 화순군 능주면 죽수길 4'},
+                             {'규모': '416.86',
+                              '데이터기준일': '2024-08-28',
+                              '사업장구분': '일반음식점',
+                              '상호명': '남도의 향기',
+                              '연번': 3,
+                              '음식물쓰레기 예상배출량(kg_년)': 8280,
+                              '전화번호': '061-373-8989',
+                              '주소': '전라남도 화순군 도곡면 지강로 212'}],
+                    'matchCount': 27,
+                    'page': 1,
+                    'perPage': 3,
+                    'totalCount': 27}
 
         self.assertEqual(expected, data)
 
@@ -61,13 +51,13 @@ class APIFetcherTest(unittest.TestCase):
             print(data)
 
     def test_fetch_data_seoul(self):
-        base_url = "openAPI.seoul.go.kr:8088/"  # 데이터 포털의 기본 URL을 여기에 입력
+        base_url = "openAPI.seoul.go.kr:8088/"
+        endpoint = "/json/GoodsInstallState/1/5/"
+        service_key = "6163496569656b66313130576a545761"
 
-        api = extract_portal.ExtractPortal(base_url)
-        endpoint = "/json/GoodsInstallState/1/5/"  # API 엔드포인트를 여기에 입력
-        servicekey = "6163496569656b66313130576a545761"
+        data_seoul_extract = extract_portal.ExtractPortal(base_url, endpoint, service_key)
 
-        data = api.get_data_seoul(servicekey, endpoint)
+        data = data_seoul_extract.get_data_seoul()
         expected = {
             "GoodsInstallState": {
                 "list_total_count": 826,
@@ -96,9 +86,9 @@ class APIFetcherTest(unittest.TestCase):
                         "PROD_NM": "바론형",
                         "MDL_NM": "ACP-2004, ACPL-SC050N",
                         "REC_END_DT": "20220320",
-                        "INST_ADDR": "서울 동작구 신대방동 686-48 협성휴포레시그니처 입구",
-                        "PRJ_NM": "신대방 협성휴포레 아파트 신축공사 중 가로등 설비 전기공사",
-                        "INST_CNT": 16.0
+                        "INST_ADDR": "서울 동작구 동작동 102-18 이수스위첸포레힐즈아파트",
+                        "PRJ_NM": "동작1 주택재건축정비사업 중 가로등 설비 전기공사",
+                        "INST_CNT": 10.0
                     },
                     {
                         "CTF_NO": "SGPD-01026",
@@ -108,9 +98,9 @@ class APIFetcherTest(unittest.TestCase):
                         "PROD_NM": "바론형",
                         "MDL_NM": "ACP-2004, ACPL-SC050N",
                         "REC_END_DT": "20220320",
-                        "INST_ADDR": "서울 동작구 동작동 102-18 이수스위첸포레힐즈아파트",
-                        "PRJ_NM": "동작1 주택재건축정비사업 중 가로등 설비 전기공사",
-                        "INST_CNT": 10.0
+                        "INST_ADDR": "서울 동작구 신대방동 686-48 협성휴포레시그니처 입구",
+                        "PRJ_NM": "신대방 협성휴포레 아파트 신축공사 중 가로등 설비 전기공사",
+                        "INST_CNT": 16.0
                     },
                     {
                         "CTF_NO": "SGPD-01045",
@@ -140,9 +130,7 @@ class APIFetcherTest(unittest.TestCase):
             }
         }
 
-
         self.assertEqual(expected, data)
 
         if data:
             print(data)
-
