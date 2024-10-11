@@ -1,10 +1,12 @@
 from minio import Minio, S3Error
 from io import BytesIO
 import json
+import uuid
+
+from src.extract.extract_portal import ExtractPortal
 
 
 def load_portal(**context):
-    print("this is load portal data module")
     response = context['request'].xcom_pull(task_ids='get_data_portal')
     url = "minio-server-url"
     client = Minio(
@@ -16,8 +18,8 @@ def load_portal(**context):
     json_str = json.dumps(response, ensure_ascii=False, indent=4)
     data = BytesIO(json_str.encode('utf-8'))
 
-    bucket_name = "my-bucket"
-    object_name = "api_response_data.txt"
+    bucket_name = "dataportal"
+    object_name = str(uuid.uuid4()) + ".txt"
 
     try:
         client.put_object(
