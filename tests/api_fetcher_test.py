@@ -1,6 +1,6 @@
 import unittest
 
-from extract import extract_portal
+from extract.extract_portal import ExtractPortal
 
 
 class APIFetcherTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class APIFetcherTest(unittest.TestCase):
         endpoint = "/15113444/v1/uddi:1ae26320-fa56-4206-8d06-9ee5db5a8dcf"
         service_key = "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os%2BbMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw%3D%3D"
 
-        data_portal_extract = extract_portal.ExtractPortal(base_url, endpoint, service_key)
+        data_portal_extract = ExtractPortal(base_url, endpoint, service_key)
         params = {"page": "1", "perPage": "3", "returnType": "JSON"}
 
         data = data_portal_extract.get_data_portal(params)
@@ -55,7 +55,7 @@ class APIFetcherTest(unittest.TestCase):
         endpoint = "/json/GoodsInstallState/1/5/"
         service_key = "6163496569656b66313130576a545761"
 
-        data_seoul_extract = extract_portal.ExtractPortal(base_url, endpoint, service_key)
+        data_seoul_extract = ExtractPortal(base_url, endpoint, service_key)
 
         data = data_seoul_extract.get_data_seoul()
         expected = {

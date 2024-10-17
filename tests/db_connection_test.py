@@ -1,8 +1,6 @@
-import os
-
+from extract.extract_portal import ExtractPortal
 from load.load_portal_meta import load_portal_meta
-from src.extract.extract_portal import ExtractPortal
-from src.load.load_portal import load_portal
+from load.load_portal import load_portal
 import unittest
 
 

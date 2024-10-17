@@ -2,9 +2,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
-from extract import extract_portal
-from load import load_portal
-from load import load_portal_meta
+from extract.extract_portal import ExtractPortal
+from load.load_portal import load_portal
+from load.load_portal_meta import load_portal_meta
 
 default_args = {
     'owner': 'admin',
@@ -20,7 +20,7 @@ dag = DAG(
     schedule_interval=None,
 )
 
-data_portal_api = extract_portal.ExtractPortal(
+data_portal_api = ExtractPortal(
     "api.odcloud.kr/api",
     "/15113444/v1/uddi:1ae26320-fa56-4206-8d06-9ee5db5a8dcf",
     "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os%2BbMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw%3D%3D"
@@ -42,17 +42,19 @@ def load_portal_def(**kwargs):
     ti = kwargs['ti']
     data = ti.xcom_pull(task_ids='get_data_portal_task', key='portal_data')
     if data:
-        file_path = load_portal.load_portal(data)
-        return file_path
+        file_path, file_size = load_portal(data)
+        kwargs['ti'].xcom_push(key='file_path', value=file_path)
+        kwargs['ti'].xcom_push(key='file_size', value=file_size)
     else:
         print("No data received")
 
 
 def load_portal_meta_def(**kwargs):
     ti = kwargs['ti']
-    file_path = ti.xcom_pull(task_ids='load_portal_task')
+    file_path = ti.xcom_pull(task_ids='load_portal_task', key='file_path')
+    file_size = ti.xcom_pull(task_ids='load_portal_task', key='file_size')
     if file_path:
-        load_portal_meta.load_portal_meta(file_path)
+        load_portal_meta(file_path, file_size)
 
 
 get_data_portal_task = PythonOperator(

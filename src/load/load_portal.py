@@ -5,8 +5,6 @@ from minio import Minio, S3Error
 import json
 import uuid
 
-from src.extract.extract_portal import ExtractPortal
-
 
 def load_portal(response):
     url = "192.168.107.19:9004"
@@ -49,7 +47,3 @@ def load_portal(response):
     minio_file_path = "http://" + url + "/" + bucket_name + "/" + file_name
     file_size = os.path.getsize(file_path)
     return minio_file_path, file_size
-
-
-
-
