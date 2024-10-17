@@ -1,6 +1,6 @@
 import unittest
 
-from src.extract import extract_portal
+from extract import extract_portal
 
 
 class APIFetcherTest(unittest.TestCase):

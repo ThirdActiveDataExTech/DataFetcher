@@ -5,20 +5,18 @@ from datetime import datetime
 import psycopg2
 
 
-def load_portal_meta(**context):
-    filepath = context['filepath'].xcom_pull(task_ids='load_portal')
+def load_portal_meta(file_path):
 
     conn = psycopg2.connect(
-        host="localhost",
-        database="airflow_db",
-        user="airflow",
-        password="201920818"
+        host="0.0.0.0:0",
+        database="dbname",
+        user="admin",
+        password="admin"
     )
 
     cur = conn.cursor()
 
     bucket_name = "my-bucket"
-    file_path = filepath
     file_name = os.path.basename(file_path)
     object_name = file_name
 

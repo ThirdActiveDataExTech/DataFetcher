@@ -2,9 +2,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
-from src.extract.extract_portal import ExtractPortal
-from src.load.load_portal import load_portal
-from src.load.load_portal_meta import load_portal_meta
+from extract import extract_portal
+from load import load_portal
+from load import load_portal_meta
 
 default_args = {
     'owner': 'admin',
@@ -17,29 +17,64 @@ dag = DAG(
     dag_id='pull_from_portal_dag',
     default_args=default_args,
     description='Pull Data From Portal and Load To DB DAG',
-    schedule=None,
+    schedule_interval=None,
 )
 
-get_data_portal = PythonOperator(
-    task_id='get_data_portal',
-    python_callable=ExtractPortal.get_data_portal,
-    op_args=["api.odcloud.kr/api", "/15113444/v1/uddi:1ae26320-fa56-4206-8d06-9ee5db5a8dcf",
-             {"serviceKey": "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os%2BbMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw"
-                            "%3D%3D",
-              "page": "1", "perPage": "3", "returnType": "JSON"}],
+data_portal_api = extract_portal.ExtractPortal(
+    "api.odcloud.kr/api",
+    "/15113444/v1/uddi:1ae26320-fa56-4206-8d06-9ee5db5a8dcf",
+    "xP4pzOKZFbsWOwq3JF9vXjeGW8FbftsjacKe8Os%2BbMnaK8U7gIWVZsTVtFnGRN5W6KvqrpApm9pIeQxIEMcrAw%3D%3D"
+)
+
+
+def fetch_data_portal_def(**kwargs):
+    params = {"page": "1", "perPage": "3", "returnType": "JSON"}
+    try:
+        data = data_portal_api.get_data_portal(params)
+        kwargs['ti'].xcom_push(key='portal_data', value=data)
+        return data
+    except Exception as e:
+        print("fetch data portal def error")
+        raise Exception(e)
+
+
+def load_portal_def(**kwargs):
+    ti = kwargs['ti']
+    data = ti.xcom_pull(task_ids='get_data_portal_task', key='portal_data')
+    if data:
+        file_path = load_portal.load_portal(data)
+        return file_path
+    else:
+        print("No data received")
+
+
+def load_portal_meta_def(**kwargs):
+    ti = kwargs['ti']
+    file_path = ti.xcom_pull(task_ids='load_portal_task')
+    if file_path:
+        load_portal_meta.load_portal_meta(file_path)
+
+
+get_data_portal_task = PythonOperator(
+    task_id='get_data_portal_task',
+    python_callable=fetch_data_portal_def,
     dag=dag,
+    retries=3,
+    do_xcom_push=True
 )
 
-load_portal = PythonOperator(
-    task_id='load_portal',
-    python_callable=load_portal,
-    dag=dag
-)
-
-load_potal_meta = PythonOperator(
-    task_id='load_potal_meta',
-    python_callable=load_portal_meta,
+load_portal_task = PythonOperator(
+    task_id='load_portal_task',
+    python_callable=load_portal_def,
     dag=dag,
+    retries=3,
 )
 
-get_data_portal >> load_portal >> load_potal_meta
+load_portal_meta_task = PythonOperator(
+    task_id='load_portal_meta_task',
+    python_callable=load_portal_meta_def,
+    dag=dag,
+    retries=3,
+)
+
+get_data_portal_task >> load_portal_task >> load_portal_meta_task

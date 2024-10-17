@@ -16,7 +16,7 @@ class ExtractPortal(object):
 
     def get_data_portal(self, data_portal_params=None):
         """
-        데이터 포털 API에서 데이터를 가져옵니다.
+        공공 데이터 포털 API에서 데이터를 가져옵니다.
 
         :param data_portal_params: 추가적인 파라미터 (딕셔너리 형태)
         :return: JSON 응답 데이터

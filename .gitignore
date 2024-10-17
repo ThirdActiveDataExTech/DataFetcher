@@ -4,9 +4,12 @@
 .idea/inspectionProfiles/*
 .idea/dataSources.xml
 .idea/.gitignore
+.idea/misc.xml
+.python-version
 
 ### airflow ###
 airflow/airflow
 airflow/airflow.cfg
 airflow/airflow.db
-airflow/logs
+airflow/airflow-*
+airflow/webserver_config.py
