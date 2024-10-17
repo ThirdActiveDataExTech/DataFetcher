@@ -5,7 +5,14 @@ from datetime import datetime
 import psycopg2
 
 
-def load_portal_meta(file_path, file_size):
+def load_portal_meta(file_path, file_size, bucket_name):
+
+    if bucket_name == 'dataportal':
+        database = "portalmeta"
+    elif bucket_name == 'seoulportal':
+        database = "seoulportal"
+    else:
+        database = "blog"
 
     conn = psycopg2.connect(
         host="0.0.0.0:0",
@@ -27,7 +34,7 @@ def load_portal_meta(file_path, file_size):
         cur.execute(insert_query, (file_name, datetime.now(), file_size, file_path))
         conn.commit()
 
-        print(f"파일 '{file_name}' 메타데이터가 PostgreSQL에 저장되었습니다.")
+        print(f"메타데이터가 PostgreSQL에 저장되었습니다.")
 
     except psycopg2.Error as db_error:
         print(f"PostgreSQL 저장 중 오류 발생: {db_error}")

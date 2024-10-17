@@ -1,3 +1,6 @@
+import json
+import os
+import uuid
 from urllib.parse import urlencode
 
 import requests
@@ -29,7 +32,20 @@ class ExtractPortal(object):
             response = requests.get(url)
             response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
 
-            return response.json()
+            file_name = str(uuid.uuid4()) + ".txt"
+            file_dir = "./extract_files/portal/"
+            file_path = file_dir + file_name
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            bucket_name = "dataportal"
+
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    json.dump(response, f, ensure_ascii=False, indent=4)
+            except EOFError as e:
+                print(f"파일 저장 실패: {e}")
+
+            return file_path, bucket_name
         except requests.exceptions.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
         except Exception as err:
@@ -48,7 +64,21 @@ class ExtractPortal(object):
         try:
             response = requests.get(url)
             response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
-            return response.json()
+
+            file_name = str(uuid.uuid4()) + ".txt"
+            file_dir = "./extract_files/portal/"
+            file_path = file_dir + file_name
+            if not os.path.exists(file_dir):
+                os.makedirs(file_dir)
+            bucket_name = "seoulportal"
+
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    json.dump(response, f, ensure_ascii=False, indent=4)
+            except EOFError as e:
+                print(f"파일 저장 실패: {e}")
+
+            return file_path, bucket_name
         except requests.exceptions.HTTPError as http_err:
             print(f"HTTP error occurred: {http_err}")
         except Exception as err:

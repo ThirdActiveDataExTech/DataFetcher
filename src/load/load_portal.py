@@ -2,12 +2,11 @@ import os
 
 import urllib3
 from minio import Minio, S3Error
-import json
-import uuid
 
 
-def load_portal(response):
-    url = "192.168.107.19:9004"
+def load_portal(file_path, bucket_name):
+    url = "0.0.0.0:1"
+    file_name = os.path.basename(file_path)
     client = Minio(
         url,
         access_key="admin",
@@ -23,20 +22,8 @@ def load_portal(response):
         )
     )
 
-    file_name = str(uuid.uuid4()) + ".txt"
-    file_dir = "./extract_files/portal/"
-    file_path = file_dir + file_name
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
-    bucket_name = "dataportal"
     if not client.bucket_exists(bucket_name):
         client.make_bucket(bucket_name)
-
-    try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(response, f, ensure_ascii=False, indent=4)
-    except S3Error as e:
-        print(f"파일 저장 실패: {e}")
 
     try:
         client.fput_object(bucket_name, file_name, file_path)
@@ -46,4 +33,4 @@ def load_portal(response):
 
     minio_file_path = "http://" + url + "/" + bucket_name + "/" + file_name
     file_size = os.path.getsize(file_path)
-    return minio_file_path, file_size
+    return minio_file_path, file_size, bucket_name
