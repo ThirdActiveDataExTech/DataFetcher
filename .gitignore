@@ -5,7 +5,10 @@
 .idea/dataSources.xml
 .idea/.gitignore
 .idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
 .python-version
+tests/extract_files
 
 ### airflow ###
 airflow/airflow

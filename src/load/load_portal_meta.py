@@ -5,31 +5,26 @@ from datetime import datetime
 import psycopg2
 
 
-def load_portal_meta(file_path):
+def load_portal_meta(file_path, file_size):
 
     conn = psycopg2.connect(
         host="0.0.0.0:0",
         database="dbname",
         user="admin",
-        password="admin"
+        password="admin",
+        port=5432
     )
 
     cur = conn.cursor()
 
-    bucket_name = "my-bucket"
     file_name = os.path.basename(file_path)
-    object_name = file_name
 
     try:
-        file_size = os.path.getsize(file_path)
-        upload_time = datetime.now()
-        object_url = f"http://your-minio-server:9000/{bucket_name}/{object_name}"
-
         insert_query = """
-            INSERT INTO file_metadata (file_name, upload_time, file_size, bucket_name, object_url)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO file_metadata (file_name, upload_time, file_size, file_path)
+            VALUES (%s, %s, %s, %s)
         """
-        cur.execute(insert_query, (file_name, upload_time, file_size, bucket_name, object_url))
+        cur.execute(insert_query, (file_name, datetime.now(), file_size, file_path))
         conn.commit()
 
         print(f"파일 '{file_name}' 메타데이터가 PostgreSQL에 저장되었습니다.")

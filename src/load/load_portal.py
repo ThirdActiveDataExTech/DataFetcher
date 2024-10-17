@@ -9,11 +9,11 @@ from src.extract.extract_portal import ExtractPortal
 
 
 def load_portal(response):
-    url = "0.0.0.0:0"
+    url = "192.168.107.19:9004"
     client = Minio(
         url,
         access_key="admin",
-        secret_key="admin",
+        secret_key="201920818",
         secure=False,
         http_client=urllib3.PoolManager(
             timeout=urllib3.Timeout.DEFAULT_TIMEOUT,
@@ -30,7 +30,7 @@ def load_portal(response):
     file_path = file_dir + file_name
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
-    bucket_name = "bucketname"
+    bucket_name = "dataportal"
     if not client.bucket_exists(bucket_name):
         client.make_bucket(bucket_name)
 
@@ -47,7 +47,9 @@ def load_portal(response):
         print(f"파일 업로드 중 에러가 발생했습니다: {e}")
 
     minio_file_path = "http://" + url + "/" + bucket_name + "/" + file_name
-    return minio_file_path
+    file_size = os.path.getsize(file_path)
+    return minio_file_path, file_size
+
 
 
 
