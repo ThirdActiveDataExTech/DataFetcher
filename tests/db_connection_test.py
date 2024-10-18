@@ -1,6 +1,6 @@
-from extract.extract_portal import ExtractPortal
-from load.load_portal_meta import load_portal_meta
-from load.load_portal import load_portal
+from extract_portal.extract_portal import ExtractPortal
+from load.load_meta_data import load_meta_data
+from load.load_data import load_data
 import unittest
 
 
@@ -18,10 +18,10 @@ class DBConnectionTest(unittest.TestCase):
 
         data_portal = data_portal_api.get_data_portal(params)
 
-        file_path, file_size = load_portal(data_portal)
+        file_path, file_size = load_data(data_portal)
 
     @staticmethod
     def test_load_metadata():
         file_path = "http://192.168.107.19:9004/dataportal/b082e81a-1aa5-4c29-8ae7-b2fa84fc4d59.txt"
         file_size = 4120
-        load_portal_meta(file_path, file_size)
+        load_meta_data(file_path, file_size)

@@ -6,6 +6,19 @@ from urllib.parse import urlencode
 import requests
 
 
+def make_file_path(url):
+    response = requests.get(url)
+    response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
+
+    file_name = str(uuid.uuid4()) + ".txt"
+    file_dir = "./extract_files/portal/"
+    file_path = file_dir + file_name
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
+
+    return response, file_path
+
+
 class ExtractPortal(object):
     def __init__(self, base_url, endpoint, service_key):
         """
@@ -29,14 +42,7 @@ class ExtractPortal(object):
         url = f"https://{self.base_url}{self.endpoint}?serviceKey={self.service_key}&{param}"
 
         try:
-            response = requests.get(url)
-            response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
-
-            file_name = str(uuid.uuid4()) + ".txt"
-            file_dir = "./extract_files/portal/"
-            file_path = file_dir + file_name
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
+            response, file_path = make_file_path(url)
             bucket_name = "dataportal"
 
             try:
@@ -62,14 +68,7 @@ class ExtractPortal(object):
         url = f"http://{self.base_url}{self.service_key}{self.endpoint}"
 
         try:
-            response = requests.get(url)
-            response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
-
-            file_name = str(uuid.uuid4()) + ".txt"
-            file_dir = "./extract_files/portal/"
-            file_path = file_dir + file_name
-            if not os.path.exists(file_dir):
-                os.makedirs(file_dir)
+            response, file_path = make_file_path(url)
             bucket_name = "seoulportal"
 
             try:
