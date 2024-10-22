@@ -2,14 +2,15 @@ import os
 
 import urllib3
 from minio import Minio, S3Error
+from config.config import Config
 
 
 def load_data(file_path, bucket_name):
-    url = "0.0.0.0:1"
+    url = Config.minio_server.url
     client = Minio(
         url,
-        access_key="admin",
-        secret_key="secretkey",
+        access_key=Config.minio_server.access_key,
+        secret_key=Config.minio_server.secret_key,
         secure=False,
         http_client=urllib3.PoolManager(
             timeout=urllib3.Timeout.DEFAULT_TIMEOUT,

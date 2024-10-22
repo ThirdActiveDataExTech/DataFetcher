@@ -9,6 +9,7 @@
 .idea/vcs.xml
 .python-version
 tests/extract_files
+__init__.py
 
 ### airflow ###
 airflow/airflow
@@ -16,3 +17,6 @@ airflow/airflow.cfg
 airflow/airflow.db
 airflow/airflow-*
 airflow/webserver_config.py
+
+###test files###
+src/tmp_files

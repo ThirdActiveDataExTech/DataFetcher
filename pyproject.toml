@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DataFetcher"
+version = "0.1.0"
+readme = "README.md"
+authors = [
+    {name = "EunmiGo", email = "example@example.com"}
+]
+description = "Airflow REST APIs to create and manage DAGS"
+requires-python = ">=3.9"
+dependencies = [
+    "minio>=7.1.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

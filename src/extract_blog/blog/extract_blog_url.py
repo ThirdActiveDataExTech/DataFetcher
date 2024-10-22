@@ -3,10 +3,10 @@ import os
 import re
 import uuid
 
-import search
-import util
-import error
-import log
+from extract_blog.blog import search
+from extract_blog.blog import util
+from extract_blog.blog import error
+from extract_blog.blog import log
 
 
 def url_parsing(url):

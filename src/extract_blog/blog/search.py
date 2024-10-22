@@ -1,8 +1,8 @@
 from urllib.parse import urlparse
 
-import util
+from extract_blog.blog import util
 
-import log
+from extract_blog.blog import log
 
 SKIP_URL = {
     'tistory': ['tag', 'archive', 'category', 'rss', 'guestbook', 'manage', 'entry']

@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from config.config import Config
 
 
 import psycopg2
@@ -15,11 +16,11 @@ def load_meta_data(file_path, file_size, bucket_name):
         database = "blog"
 
     conn = psycopg2.connect(
-        host="0.0.0.0:0",
+        host=Config.postgres_server.host,
         database=database,
-        user="admin",
-        password="admin",
-        port=5432
+        user=Config.postgres_server.user,
+        password=Config.postgres_server.password,
+        port=Config.postgres_server.port
     )
 
     cur = conn.cursor()
@@ -36,7 +37,6 @@ def load_meta_data(file_path, file_size, bucket_name):
                 cur.execute(insert_query, (file_name, datetime.now(), file_size[num], path))
                 conn.commit()
 
-                print(f"메타데이터가 PostgreSQL에 저장되었습니다.")
                 num += 1
             except psycopg2.Error as db_error:
                 print(f"PostgreSQL 저장 중 오류 발생: {db_error}")
@@ -51,10 +51,9 @@ def load_meta_data(file_path, file_size, bucket_name):
             cur.execute(insert_query, (file_name, datetime.now(), file_size, file_path))
             conn.commit()
 
-            print(f"메타데이터가 PostgreSQL에 저장되었습니다.")
-
         except psycopg2.Error as db_error:
             print(f"PostgreSQL 저장 중 오류 발생: {db_error}")
             conn.rollback()
 
     conn.close()
+    return "메타데이터가 PostgreSQL에 저장되었습니다."

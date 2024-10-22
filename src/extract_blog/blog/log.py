@@ -1,7 +1,7 @@
 import os
 import sys
 import logging.handlers
-import config
+from extract_blog.blog import config
 
 log_format = "[%(asctime)s] %(levelname)s, %(filename)s %(funcName)s %(lineno)d, %(message)s"
 formatter = logging.Formatter(log_format, '%Y/%m/%d %H:%M:%S')

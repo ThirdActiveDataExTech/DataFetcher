@@ -11,8 +11,9 @@ def make_file_path(url):
     response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
 
     file_name = str(uuid.uuid4()) + ".txt"
-    file_dir = "./extract_files/portal/"
-    file_path = file_dir + file_name
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_dir = os.path.join(root_dir, 'tmp_files')
+    file_path = file_dir + "/" + file_name
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
 
@@ -47,7 +48,7 @@ class ExtractPortal(object):
 
             try:
                 with open(file_path, "w", encoding="utf-8") as f:
-                    json.dump(response, f, ensure_ascii=False, indent=4)
+                    json.dump(response.json(), f, ensure_ascii=False, indent=4)
             except EOFError as e:
                 print(f"파일 저장 실패: {e}")
 
@@ -73,7 +74,7 @@ class ExtractPortal(object):
 
             try:
                 with open(file_path, "w", encoding="utf-8") as f:
-                    json.dump(response, f, ensure_ascii=False, indent=4)
+                    json.dump(response.json(), f, ensure_ascii=False, indent=4)
             except EOFError as e:
                 print(f"파일 저장 실패: {e}")
 
