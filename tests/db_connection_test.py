@@ -19,14 +19,12 @@ class DBConnectionTest(unittest.TestCase):
 
         file_path, file_size, bucket_name = load_data(file_path, bucket_name)
 
-        expected = load_meta_data(file_path, file_size, bucket_name)
+        expected = load_meta_data(file_path, file_size)
 
         self.assertEqual(expected, "메타데이터가 PostgreSQL에 저장되었습니다.")
-
 
     def test_load_metadata(self):
         file_path = "http://192.168.107.19:9004/dataportal/b082e81a-1aa5-4c29-43e7-b2fa84fc4d59.txt"
         file_size = 4120
-        bucket_name = "dataportal"
-        expected = load_meta_data(file_path, file_size, bucket_name)
+        expected = load_meta_data(file_path, file_size)
         self.assertEqual(expected, "메타데이터가 PostgreSQL에 저장되었습니다.")

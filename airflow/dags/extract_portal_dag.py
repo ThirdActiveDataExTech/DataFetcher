@@ -57,7 +57,7 @@ def load_portal_meta_def(**kwargs):
     file_size = ti.xcom_pull(task_ids='load_portal_task', key='file_size')
     bucket_name = ti.xcom_pull(task_ids='load_portal_task', key='bucket_name')
     if minio_path:
-        load_meta_data(minio_path, file_size, bucket_name)
+        load_meta_data(minio_path, file_size)
 
 
 crawling_portal_task = PythonOperator(

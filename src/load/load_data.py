@@ -25,20 +25,20 @@ def load_data(file_path, bucket_name):
     if not client.bucket_exists(bucket_name):
         client.make_bucket(bucket_name)
 
-    if bucket_name == "blog":
+    if isinstance(file_path, list):
         minio_file_path = []
         file_size = []
         for path in file_path:
             file_name = os.path.basename(path)
             try:
                 client.fput_object(bucket_name, file_name, path)
-                print(f"'{file_name}' 파일이 '{bucket_name}' 버킷에 업로드되었습니다.")
             except S3Error as e:
                 print(f"파일 업로드 중 에러가 발생했습니다: {e}")
-            minio_path = "http://" + url + "/" + bucket_name + "/" + file_name
-            minio_file_path.append(minio_path)
 
-            size = os.path.getsize(file_path)
+            minio_path = "http://" + url + "/" + bucket_name + "/" + file_name
+            size = os.path.getsize(path)
+
+            minio_file_path.append(minio_path)
             file_size.append(size)
     else:
         file_name = os.path.basename(file_path)

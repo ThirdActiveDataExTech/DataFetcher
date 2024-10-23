@@ -1,8 +1,6 @@
 from urllib.parse import urlparse
 
-from extract_blog.blog import util
-
-from extract_blog.blog import log
+from extract_blog import util
 
 SKIP_URL = {
     'tistory': ['tag', 'archive', 'category', 'rss', 'guestbook', 'manage', 'entry']
@@ -67,8 +65,6 @@ def get_site_type(url):
 def publish_embedded_links(main_url):
     base_url = get_base_url(main_url)
     embedded_links = search_link(base_url, main_url)
-
-    log.info(embedded_links)
 
     return embedded_links
 

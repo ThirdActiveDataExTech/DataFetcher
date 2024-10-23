@@ -8,12 +8,12 @@ import requests
 
 def make_file_path(url):
     response = requests.get(url)
-    response.raise_for_status()  # HTTP 오류가 있는 경우 예외 발생
+    response.raise_for_status()
 
     file_name = str(uuid.uuid4()) + ".txt"
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file_dir = os.path.join(root_dir, 'tmp_files')
-    file_path = file_dir + "/" + file_name
+    file_dir = os.path.join(root_dir, 'tmp_files/portal/')
+    file_path = file_dir + file_name
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
 

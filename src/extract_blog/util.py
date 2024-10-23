@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import error
+from extract_blog import error
 import bs4
 
 

@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
-from extract_blog.blog import extract_blog_url
+from extract_blog import extract_blog_url
 from load.load_data import load_data
 from load.load_meta_data import load_meta_data
 
@@ -23,7 +23,8 @@ dag = DAG(
 
 def crawling_blog_def(**kwargs):
     try:
-        path_list, bucket_name = extract_blog_url.blog_crawler()
+        url = 'https://section.blog.naver.com'
+        path_list, bucket_name = extract_blog_url.blog_crawler(url)
         kwargs['ti'].xcom_push(key='path_list', value=path_list)
         kwargs['ti'].xcom_push(key='bucket_name', value=bucket_name)
     except Exception as e:
@@ -50,7 +51,7 @@ def load_blog_meta_def(**kwargs):
     file_size = ti.xcom_pull(task_ids='load_blog_task', key='file_size')
     bucket_name = ti.xcom_pull(task_ids='load_blog_task', key='bucket_name')
     if minio_path_list:
-        load_meta_data(minio_path_list, file_size, bucket_name)
+        load_meta_data(minio_path_list, file_size)
 
 
 crawling_blog_task = PythonOperator(
