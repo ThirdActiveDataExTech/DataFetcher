@@ -23,7 +23,7 @@ dag = DAG(
 
 def crawling_blog_def(**kwargs):
     try:
-        url = 'https://section.blog.naver.com'
+        url = 'https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage=1&groupId=0'
         path_list, bucket_name = extract_blog_url.blog_crawler(url)
         kwargs['ti'].xcom_push(key='path_list', value=path_list)
         kwargs['ti'].xcom_push(key='bucket_name', value=bucket_name)

@@ -7,6 +7,7 @@
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
+src/config/config.py
 .python-version
 tests/extract_files
 __init__.py

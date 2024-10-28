@@ -1,24 +1,14 @@
 import json
 import os
-import re
 import uuid
 
-from extract_blog import search, util, error
+import requests
 
-
-def url_parsing(url):
-    naver_pattern = r"https://m\.blog\.naver\.com/([^/]+)/(\d+)"
-
-    match_naver = re.match(naver_pattern, url)
-
-    if not match_naver:
-        return False
-    return True
+from extract_blog import search, util
 
 
 def blog_crawler(url):
-    # 해당 web 에 있는 모든 url 을 [수집 대기 URL queue] 에 전송
-    # current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # 해당 web 에 있는 모든 url 을 수집해 리턴
     blog_url_list = search.publish_embedded_links(url)
 
     path_list = []
@@ -28,11 +18,12 @@ def blog_crawler(url):
         # URL 유효성 체크
         try:
             util.status_check(blog_url)
-        except error.WebRequestsError:
+        except requests.exceptions.HTTPError:
             raise
-
-        page = util.read_web(blog_url)
-
+        try:
+            page = util.read_web(blog_url)
+        except requests.exceptions.HTTPError:
+            continue
         text_data = page.get_text()
 
         file_name = str(uuid.uuid4()) + ".txt"
@@ -49,8 +40,6 @@ def blog_crawler(url):
                     json.dump(text_data, f, ensure_ascii=False, indent=4)
             except EOFError as e:
                 print(f"파일 저장 실패: {e}")
-
-            return file_path, bucket_name
         except Exception as err:
             print(f"An error occurred: {err}")
 
@@ -58,9 +47,6 @@ def blog_crawler(url):
     return path_list, bucket_name
 
 
-
-
-
 if __name__ == "__main__":
-    test_url = 'https://section.blog.naver.com'
+    test_url = 'https://section.blog.naver.com/ThisMonthDirectory.naver'
     crawler = blog_crawler(test_url)
