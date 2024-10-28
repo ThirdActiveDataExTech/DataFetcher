@@ -7,10 +7,10 @@
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
-src/config/config.py
 .python-version
+src/config/config.py
 tests/extract_files
-__init__.py
+*/__init__.py
 
 ### airflow ###
 airflow/airflow
