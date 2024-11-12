@@ -7,10 +7,9 @@
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
-src/config/config.py
 .python-version
-tests/extract_files
-__init__.py
+src/config/config.py
+*/__init__.py
 
 ### airflow ###
 airflow/airflow
@@ -20,4 +19,5 @@ airflow/airflow-*
 airflow/webserver_config.py
 
 ###test files###
+tests/extract_files
 src/tmp_files
