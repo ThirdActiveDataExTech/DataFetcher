@@ -1,12 +1,7 @@
 ### basic ###
-.venv/*
-.idea/.name
-.idea/inspectionProfiles/*
-.idea/dataSources.xml
-.idea/.gitignore
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
+.DS_Store
+.venv
+.idea
 .python-version
 src/config/config.py
 */__init__.py
