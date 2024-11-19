@@ -59,7 +59,6 @@ def load_blog_meta_def(**kwargs):
     ti = kwargs['ti']
     minio_path_list = ti.xcom_pull(task_ids='load_blog_task', key='minio_path_list')
     file_size = ti.xcom_pull(task_ids='load_blog_task', key='file_size')
-    bucket_name = ti.xcom_pull(task_ids='load_blog_task', key='bucket_name')
     if minio_path_list:
         load_meta_data(minio_path_list, file_size)
 

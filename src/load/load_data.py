@@ -31,9 +31,13 @@ def load_data(file_path, bucket_name):
         for path in file_path:
             file_name = os.path.basename(path)
             try:
-                client.fput_object(bucket_name, file_name, path)
+                client.fput_object(bucket_name, file_name + ".txt", path)
             except S3Error as e:
-                print(f"파일 업로드 중 에러가 발생했습니다: {e}")
+                print(f"{file_name} txt 파일 업로드 중 에러가 발생했습니다: {e}")
+            try:
+                client.fput_object(bucket_name, file_name+".key", path + ".key")
+            except S3Error as e:
+                print(f"{file_name} keyword 파일 업로드 중 에러가 발생했습니다: {e}")
 
             minio_path = "http://" + url + "/" + bucket_name + "/" + file_name + ".txt"
             size = os.path.getsize(path)
