@@ -87,5 +87,4 @@ load_blog_meta_task = PythonOperator(
     dag=dag,
 )
 
-crawling_blog_task >> extract_keyword_task
-[crawling_blog_task, extract_keyword_task] >> load_blog_task >> load_blog_meta_task
+crawling_blog_task >> extract_keyword_task >> load_blog_task >> load_blog_meta_task
