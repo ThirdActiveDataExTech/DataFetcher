@@ -1,8 +1,6 @@
 import json
 import re
 
-bucket_name = "keyword"
-
 
 def extract_keyword(file_path_list):
     keyword_file_list = []
@@ -18,5 +16,4 @@ def extract_keyword(file_path_list):
         except EOFError as e:
             print(f"파일 저장 실패: {e}")
         keyword_file_list.append(keyword_file_path)
-    return keyword_file_list, bucket_name
 

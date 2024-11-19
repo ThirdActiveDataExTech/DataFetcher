@@ -2,8 +2,8 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
-from extract_keyword import extract_keyword
 from extract_blog import extract_blog_url
+from extract_keyword import extract_keyword
 from load.load_data import load_data
 from load.load_meta_data import load_meta_data
 
@@ -37,10 +37,7 @@ def extract_keyword_def(**kwargs):
     ti = kwargs['ti']
     path_list = ti.xcom_pull(task_ids='crawling_portal_task', key='path_list')
     if path_list is not None:
-        minio_path_list, file_size, bucket_name = extract_keyword.extract_keyword(path_list)
-        kwargs['ti'].xcom_push(key='minio_path_list', value=minio_path_list)
-        kwargs['ti'].xcom_push(key='file_size', value=file_size)
-        kwargs['ti'].xcom_push(key='bucket_name', value=bucket_name)
+        extract_keyword.extract_keyword(path_list)
     else:
         print("No data received")
 
