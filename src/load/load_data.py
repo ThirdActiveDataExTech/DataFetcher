@@ -35,7 +35,7 @@ def load_data(file_path, bucket_name):
             except S3Error as e:
                 print(f"파일 업로드 중 에러가 발생했습니다: {e}")
 
-            minio_path = "http://" + url + "/" + bucket_name + "/" + file_name
+            minio_path = "http://" + url + "/" + bucket_name + "/" + file_name + ".txt"
             size = os.path.getsize(path)
 
             minio_file_path.append(minio_path)
