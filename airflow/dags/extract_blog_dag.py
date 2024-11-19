@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
+from extract_keyword import extract_keyword
 from extract_blog import extract_blog_url
 from load.load_data import load_data
 from load.load_meta_data import load_meta_data
@@ -24,12 +25,24 @@ dag = DAG(
 def crawling_blog_def(**kwargs):
     try:
         url = 'https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage=1&groupId=0'
-        path_list, bucket_name = extract_blog_url.blog_crawler(url)
+        path_list = extract_blog_url.blog_crawler(url)
         kwargs['ti'].xcom_push(key='path_list', value=path_list)
-        kwargs['ti'].xcom_push(key='bucket_name', value=bucket_name)
+        kwargs['ti'].xcom_push(key='bucket_name', value="blog")
     except Exception as e:
         print("fetch data blog def error")
         raise Exception(e)
+
+
+def extract_keyword_def(**kwargs):
+    ti = kwargs['ti']
+    path_list = ti.xcom_pull(task_ids='crawling_portal_task', key='path_list')
+    if path_list is not None:
+        minio_path_list, file_size, bucket_name = extract_keyword.extract_keyword(path_list)
+        kwargs['ti'].xcom_push(key='minio_path_list', value=minio_path_list)
+        kwargs['ti'].xcom_push(key='file_size', value=file_size)
+        kwargs['ti'].xcom_push(key='bucket_name', value=bucket_name)
+    else:
+        print("No data received")
 
 
 def load_blog_def(**kwargs):
@@ -60,6 +73,12 @@ crawling_blog_task = PythonOperator(
     dag=dag,
     do_xcom_push=True
 )
+extract_keyword_task = PythonOperator(
+    task_id='extract_blog_task',
+    python_callable=extract_keyword_def,
+    dag=dag,
+    do_xcom_push=True
+)
 load_blog_task = PythonOperator(
     task_id='load_blog_task',
     python_callable=load_blog_def,
@@ -72,4 +91,5 @@ load_blog_meta_task = PythonOperator(
     dag=dag,
 )
 
-crawling_blog_task >> load_blog_task >> load_blog_meta_task
+crawling_blog_task >> extract_keyword_task
+[crawling_blog_task, extract_keyword_task] >> load_blog_task >> load_blog_meta_task
