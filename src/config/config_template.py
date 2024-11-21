@@ -29,3 +29,8 @@ class Config:
     postgres_server = _PostgresServer()
     data_portal = _DataPortal()
     seoul_portal = _SeoulPortal()
+
+
+class NaverAPIIdentify:
+    client_id = "<KEY>"
+    client_secret = "<KEY>"

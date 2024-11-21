@@ -17,19 +17,16 @@ def load_meta_data(file_path, file_size):
 
     cur = conn.cursor()
 
-    if isinstance(file_path, list):
-        num = 0
-        for path in file_path:
+    if isinstance(file_path, list) & isinstance(file_size, list):
+        for path, size in zip(file_path, file_size):
             file_name = os.path.basename(path)
-            file_size = file_size[num]
             try:
                 insert_query = """
                     INSERT INTO file_metadata (file_name, upload_time, file_size, file_path)
                     VALUES (%s, %s, %s, %s)
                 """
-                cur.execute(insert_query, (file_name, datetime.now(), file_size, path))
+                cur.execute(insert_query, (file_name, datetime.now(), size, path))
                 conn.commit()
-                num += 1
             except psycopg2.Error as db_error:
                 print(f"PostgreSQL 저장 중 오류 발생: {db_error}")
                 conn.rollback()

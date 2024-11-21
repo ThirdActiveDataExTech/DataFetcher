@@ -5,6 +5,7 @@ import uuid
 import requests
 
 from extract_blog import search, util
+from extract_keyword import extract_keyword
 
 
 def blog_crawler(url):
@@ -12,21 +13,21 @@ def blog_crawler(url):
     blog_url_list = search.publish_embedded_links(url)
 
     path_list = []
-    bucket_name = "blog"
 
     for blog_url in blog_url_list:
         # URL 유효성 체크
+        url = blog_url[0:8]+'m.'+blog_url[8:]
         try:
-            util.status_check(blog_url)
+            util.status_check(url)
         except requests.exceptions.HTTPError:
             raise
         try:
-            page = util.read_web(blog_url)
+            page = util.read_web(url)
         except requests.exceptions.HTTPError:
             continue
         text_data = page.get_text()
 
-        file_name = str(uuid.uuid4()) + ".txt"
+        file_name = str(uuid.uuid4())
         root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         file_dir = os.path.join(root_dir, 'tmp_files/blog/')
         file_path = file_dir + file_name
@@ -44,9 +45,11 @@ def blog_crawler(url):
             print(f"An error occurred: {err}")
 
         path_list.append(file_path)
-    return path_list, bucket_name
+
+    extract_keyword.extract_keyword(path_list)
+    return path_list
 
 
 if __name__ == "__main__":
-    test_url = 'https://section.blog.naver.com/ThisMonthDirectory.naver'
+    test_url = 'https://m.blog.naver.com'
     crawler = blog_crawler(test_url)
