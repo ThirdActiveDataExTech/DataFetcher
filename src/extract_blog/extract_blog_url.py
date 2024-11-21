@@ -16,12 +16,13 @@ def blog_crawler(url):
 
     for blog_url in blog_url_list:
         # URL 유효성 체크
+        url = blog_url[0:8]+'m.'+blog_url[8:]
         try:
-            util.status_check(blog_url)
+            util.status_check(url)
         except requests.exceptions.HTTPError:
             raise
         try:
-            page = util.read_web(blog_url)
+            page = util.read_web(url)
         except requests.exceptions.HTTPError:
             continue
         text_data = page.get_text()
