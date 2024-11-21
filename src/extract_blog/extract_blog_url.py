@@ -50,5 +50,5 @@ def blog_crawler(url):
 
 
 if __name__ == "__main__":
-    test_url = 'https://section.blog.naver.com/ThisMonthDirectory.naver'
+    test_url = 'https://m.blog.naver.com'
     crawler = blog_crawler(test_url)

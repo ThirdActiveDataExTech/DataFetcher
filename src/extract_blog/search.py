@@ -1,8 +1,14 @@
+import json
+import urllib
 from urllib.parse import urlparse
 
 import requests
 
+from config.config import NaverAPIIdentify
 from extract_blog import util
+import os
+import sys
+import urllib.request
 
 SKIP_URL = {
     'tistory': ['tag', 'archive', 'category', 'rss', 'guestbook', 'manage', 'entry']
@@ -34,17 +40,36 @@ url_list = [
 ]
 
 
+def grab_url_list(url):
+    client_id = NaverAPIIdentify.client_id
+    client_secret = NaverAPIIdentify.client_secret
+
+    enctext = urllib.parse.quote("검색할 단어")
+    url = "https://openapi.naver.com/v1/search/blog?query=" + enctext + "&display=5&sort=date"  # JSON 결과
+    # url = "https://openapi.naver.com/v1/search/blog.xml?query=" + encText # XML 결과
+    request = urllib.request.Request(url)
+    request.add_header("X-Naver-Client-Id", client_id)
+    request.add_header("X-Naver-Client-Secret", client_secret)
+    response = urllib.request.urlopen(request)
+    page = response.getcode()
+    if page == 200:
+        response_body = response.read().decode("utf-8")
+        return json.loads(response_body)
+    else:
+        print("Error Code:" + page)
+        return None
+
+
 def search_link(base_url: str, target_url: str):
     searched_url = set()
     try:
-        page = util.read_web(target_url)
+        page = grab_url_list(target_url)
     except requests.exceptions.HTTPError:
         raise
 
-    for row in page.find_all(['a']):
-        path = row.get('href')
-        if path is None:
-            continue
+    items = page["items"]
+    for item in items:
+        path = item["link"]
 
         if path.startswith('/'):
             url = f"{base_url}{path}"
