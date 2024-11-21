@@ -25,7 +25,7 @@ def load_meta_data(file_path, file_size):
                     INSERT INTO file_metadata (file_name, upload_time, file_size, file_path)
                     VALUES (%s, %s, %s, %s)
                 """
-                cur.execute(insert_query, (file_name, datetime.now(), file_size, path))
+                cur.execute(insert_query, (file_name, datetime.now(), size, path))
                 conn.commit()
             except psycopg2.Error as db_error:
                 print(f"PostgreSQL 저장 중 오류 발생: {db_error}")
